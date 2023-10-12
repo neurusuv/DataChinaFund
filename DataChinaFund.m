@@ -1,14 +1,18 @@
 function [Date,NAV,ANAV,Buy,Sell,Dvd ]= DataChinaFund(fundcode,StartDate,EndDate)
+	
+	Date = [];   % 日期
+	NAV	 = [];   % 基金净值
+	ANAV = [];   % 累计净值 (分红 合股折算后) 
+	Buy  = {};   % 可否买 
+	Sell = {};   % 可否卖
+	Dvd	 = {};   % 分红信息
+	
+	
+	
     page = 1;
 	num  = 1;
 	numPages =1;
 	
-	Date = [];   
-	NAV	 = [];   
-	ANAV = [];    
-	Buy  = {};    
-	Sell = {};  
-	Dvd	 = {}; 
 	
 	while (page<=numPages) 
 	
@@ -19,11 +23,11 @@ function [Date,NAV,ANAV,Buy,Sell,Dvd ]= DataChinaFund(fundcode,StartDate,EndDate
 				  '&edate='				,... 
 				  EndDate				,...
 				  '&per=50&page='		,...
-				  num2str(page)			]
+				  num2str(page)			];
 		
 		
 		webContent = webread(webUrl);	
-		  
+		pause(0.2);  
 		
 		dataPages = webContent(strfind(webContent, 'pages:') + length('pages:')   :  end) ;
 		dataPages = strrep(dataPages, 'curpage:' , ''); 
@@ -31,7 +35,8 @@ function [Date,NAV,ANAV,Buy,Sell,Dvd ]= DataChinaFund(fundcode,StartDate,EndDate
 		dataPages = strsplit(dataPages, ',');
 		numPages	=  dataPages{1}; numPages = str2num(numPages);  
 		
-	
+		
+		disp([num2str(page),'/',num2str(numPages)]);
 	
 
 		% 找到关键词的位置 
@@ -101,11 +106,11 @@ function [Date,NAV,ANAV,Buy,Sell,Dvd ]= DataChinaFund(fundcode,StartDate,EndDate
 	
 	
 	
-	
-	
-	
-	
-	 
-
+	Date  = flip(Date  );   
+	NAV   = flip(NAV   );   
+	ANAV  = flip(ANAV  );   
+	Buy   = flip(Buy   );   
+	Sell  = flip(Sell  );   
+    Dvd   = flip(Dvd   ); 
 end
 
