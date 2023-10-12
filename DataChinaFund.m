@@ -1,62 +1,111 @@
-function result= get_fund(fundcode,StartDate,EndDate)
-    
-    dateFormate='yyyy-mm-dd';
-    file_url= [ 'http://data.funds.hexun.com/outxml/detail/openfundnetvalue.aspx?fundcode=', ...
-                    num2str(fundcode, '%06u\n'), ...
-                    '&startdate=',   ...
-                    datestr(StartDate,dateFormate), ...
-                    '&enddate=',    ...
-                    datestr(EndDate,dateFormate)];
-                
-    file_name=[num2str(fundcode, '%06u\n'),'_',datestr(StartDate,dateFormate),'_',datestr(EndDate,dateFormate) ,'.xml'];
-                
-    websave(fullfile(pwd,'data',file_name),file_url);
-    
-    
-    xml_data=dir(fullfile(pwd,'data',file_name));
-    
-    
-    
-    if (xml_data.bytes < 10) 
-        result.ds=[];
-        result.vs=[];
-        result.FundCode= fundcode;
-        result.FundName= '';
-        result.length=0;
-        
-  
-    else
+function [Date,NAV,ANAV,Buy,Sell,Dvd ]= DataChinaFund(fundcode,StartDate,EndDate)
+    page = 1;
+	num  = 1;
+	numPages =1;
+	
+	Date = [];   
+	NAV	 = [];   
+	ANAV = [];    
+	Buy  = {};    
+	Sell = {};  
+	Dvd	 = {}; 
+	
+	while (page<=numPages) 
+	
+		webUrl=['https://fundf10.eastmoney.com/F10DataApi.aspx?type=lsjz&code=', ...
+				  fundcode				,...
+				  '&sdate='				,... 
+				  StartDate				,... 
+				  '&edate='				,... 
+				  EndDate				,...
+				  '&per=50&page='		,...
+				  num2str(page)			]
+		
+		
+		webContent = webread(webUrl);	
+		  
+		
+		dataPages = webContent(strfind(webContent, 'pages:') + length('pages:')   :  end) ;
+		dataPages = strrep(dataPages, 'curpage:' , ''); 
+		dataPages = strrep(dataPages, '};' 		 , ''); 
+		dataPages = strsplit(dataPages, ',');
+		numPages	=  dataPages{1}; numPages = str2num(numPages);  
+		
+	
+	
 
+		% 找到关键词的位置 
+		dataContent =  webContent(strfind(webContent, '<tbody><tr>') + length('<tbody>')   :  strfind(webContent, '</tbody>') - 1);
+		
+		
 
-        xDoc=xmlread(fullfile(pwd,'data',file_name));
-        d_cells=xDoc.getElementsByTagName('fld_enddate');
-        v_cells=xDoc.getElementsByTagName('fld_netvalue');
-        fc=xDoc.getElementsByTagName('fundcode');
-        fn=xDoc.getElementsByTagName('fundname');
-
-        cell_length=min(d_cells.getLength,v_cells.getLength);
-
-        DL=zeros(d_cells.getLength,1);
-        VL=zeros(v_cells.getLength,1);
-
-        for i=0:(cell_length-1)
-            DL(i+1)  = datenum(char(d_cells.item(i).getFirstChild.getData),'yyyy-mm-dd');  
-            VL(i+1)  = str2num(v_cells.item(i).getFirstChild.getData);
-        end
-
-        d_cells=xDoc.getElementsByTagName('fld_enddate');
-
-        result.ds=flipud(DL);
-        result.vs=flipud(VL);
-        result.FundCode= str2num(fc.item(0).getFirstChild.getData);
-        result.FundName=    char(fn.item(0).getFirstChild.getData);
-        
-        result.length=cell_length;
-        
-        
-      
-    
+		
+		dataContent= strrep(dataContent, '<td class=''tor bold''>'		, '<td>');
+		dataContent= strrep(dataContent, '<td class=''tor bold red''>'	, '<td>');
+		dataContent= strrep(dataContent, '<td class=''tor bold grn''>'	, '<td>');
+		dataContent= strrep(dataContent, '<td class=''tor bold bck''>'	, '<td>');
+		dataContent= strrep(dataContent, '<td class=''red unbold''>'	, '<td>'); 
+		dataContent= strrep(dataContent, '</tr><tr>'					, '<r>');  
+		dataContent= strrep(dataContent, '</td><td>'					, '<d>'); 
+		dataContent= strrep(dataContent, '<tr>'							, '');  
+		dataContent= strrep(dataContent, '</tr>'						, '');  
+		dataContent= strrep(dataContent, '<td>'							, ''); 
+		dataContent= strrep(dataContent, '</td>'						, ''); 
+		dataContent= strrep(dataContent, '<d><d>'						, '<d> <d>');
+		
+		
+		dataLines = strsplit(dataContent, '<r>');
+		
+		 
+		
+		for i=1:length(dataLines)
+			
+			dataCols = dataLines{i}; 
+			dataCols = strsplit(dataCols, '<d>'); 
+           
+            
+			newDate  = dataCols{1};	newDate = datenum(newDate,'yyyy-mm-dd') ;
+			newNAV	 = dataCols{2};	newNAV	= str2num(newNAV);
+			newANAV  = dataCols{3}; newANAV = str2num(newANAV);
+			newBuy   = dataCols{5};  
+			newSell  = dataCols{6};
+			newDvd	 = dataCols{7};	
+			
+			
+			
+			% dataCols 
+			% dataCols 
+			% newDate  
+			% newNAV	 
+			% newANAV  
+			% newBuy   
+			% newSell  
+			% newDvd	 
+			
+			
+			Date(num) = newDate	;   
+			NAV(num)  = newNAV	;   
+			ANAV(num) = newANAV	;    
+			Buy{num}  = newBuy	;    
+			Sell{num} = newSell	;  
+			Dvd{num}  = newDvd	; 
+	
+			num = num + 1;
+			
+		end
+		
+		
+		page = page + 1;
+		
     end
+	
+	
+	
+	
+	
+	
+	
+	 
 
 end
 
