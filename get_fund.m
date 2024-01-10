@@ -1,5 +1,5 @@
 
-%[Date,NAV,ANAV,Buy,Sell,Dvd ] = DataChinaFund('510300'  , '2000-01-01' , '2023-10-11');
+ [Date,NAV,ANAV,Buy,Sell,Dvd ] = DataChinaFund('510300'  , '2000-01-01' , '2024-10-11');
 
 
 money = zeros(size(ANAV)); %现金
