@@ -61,44 +61,38 @@ function [Date,NAV,ANAV,Buy,Sell,Dvd ]= DataChinaFund(fundcode,StartDate,EndDate
 		
 		dataLines = strsplit(dataContent, '<r>');
 		
-		 
-		
-		for i=1:length(dataLines)
-			
-			dataCols = dataLines{i}; 
-			dataCols = strsplit(dataCols, '<d>'); 
-           
+		if contains(dataLines, '暂无数据') 
             
-			newDate  = dataCols{1};	newDate = datenum(newDate,'yyyy-mm-dd') ;
-			newNAV	 = dataCols{2};	newNAV	= str2num(newNAV);
-			newANAV  = dataCols{3}; newANAV = str2num(newANAV);
-			newBuy   = dataCols{5};  
-			newSell  = dataCols{6};
-			newDvd	 = dataCols{7};	
-			
-			
-			
-			% dataCols 
-			% dataCols 
-			% newDate  
-			% newNAV	 
-			% newANAV  
-			% newBuy   
-			% newSell  
-			% newDvd	 
-			
-			
-			Date(num) = newDate	;   
-			NAV(num)  = newNAV	;   
-			ANAV(num) = newANAV	;    
-			Buy{num}  = newBuy	;    
-			Sell{num} = newSell	;  
-			Dvd{num}  = newDvd	; 
-	
-			num = num + 1;
-			
-		end
+		else	 
+			for i=1:length(dataLines)
+				
+				dataCols = dataLines{i}; 
+				dataCols = strsplit(dataCols, '<d>'); 
+				 
+				newDate  = dataCols{1}; 	
+				newDate = datenum(newDate,'yyyy-mm-dd') ;
+				newNAV	 = dataCols{2};	
+				newNAV	= str2num(newNAV);
+				newANAV  = dataCols{3}; 
+				newANAV = str2num(newANAV);
+				newBuy   = dataCols{5};  
+				newSell  = dataCols{6};
+				newDvd	 = dataCols{7};	
+				
+				 
+				
+				
+				Date(num) = newDate	;   
+				NAV(num)  = newNAV	;   
+				ANAV(num) = newANAV	;    
+				Buy{num}  = newBuy	;    
+				Sell{num} = newSell	;  
+				Dvd{num}  = newDvd	; 
 		
+				num = num + 1;
+				
+			end
+		end	
 		
 		page = page + 1;
 		
