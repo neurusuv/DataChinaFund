@@ -27,7 +27,7 @@ function [Date,NAV,ANAV,Buy,Sell,Dvd ]= DataChinaFund(fundcode,StartDate,EndDate
 		
 		
 		webContent = webread(webUrl);	
-		pause(1.8);  
+		pause(2.8);  
 		
 		dataPages = webContent(strfind(webContent, 'pages:') + length('pages:')   :  end) ;
 		dataPages = strrep(dataPages, 'curpage:' , ''); 
