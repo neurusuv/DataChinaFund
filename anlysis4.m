@@ -1,4 +1,5 @@
 
+%DataChinaFundCached('510300'  , '2000-01-01' , '2024-10-11');
 %DataChinaFundCached('001588'  , '2000-01-01' , '2024-10-11');
 load('dataCache.mat');
 

@@ -44,7 +44,7 @@ anlysis4.m 演示了通过动态指标, 对沪深300基金进行投资的交易�
 
 指标介绍
 
-https://www.toutiao.com/article/7329121604901257778/?log_from=2c025ee800f7f_1706521979945
+https://zhuanlan.zhihu.com/p/680259196
 
 沪深300基金投资指标：动能系数 （ 实测回溯年化收益率10.01%）
 
