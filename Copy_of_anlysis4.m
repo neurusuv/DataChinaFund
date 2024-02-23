@@ -39,7 +39,7 @@ money(1)=1;
 
 for i=2:N
 	dp(i)=price(i)/price(i-1)-1;
-	in=i-50;
+	in=i-100;
 	if (in<1) in=1; end
 	 
 	
@@ -52,12 +52,12 @@ for i=2:N
 	capital(i)= money (i)+ share(i)*  price(i);
 	
 	if (i>100)
-		if (mdp(i-1)>0 )
+		if (mdp(i-1)>0)
 			if (money(i-1)>0)  
 			 
 
-				share(i)=4*money(i-1)/price(i);
-				money(i)=0-3*money(i-1); 
+				share(i)=1*money(i-1)/price(i);
+				money(i)=0-0*money(i-1); 
 
 			end
 		else
@@ -65,7 +65,12 @@ for i=2:N
 			share(i)=0;
 			money(i)=money(i)+share(i-1) *price(i); 
         end
-			
+		
+        %% 借款成本
+        if money(i)<0
+           money(i)=money(i)*(1.08)^(1/261);
+        end
+        
         
         
 	end
@@ -82,7 +87,7 @@ capital= money + share .*  price;
 
 subplot(2,1,1);
 plot(date, price, 'k.-'); hold on; 
-plot(date,mdp*10000/4+1, 'b.-'); hold on; 
+plot(date,mdp*10000/4, 'b.-'); hold on; 
 plot(date(mdp>0), price(mdp>0), 'r*'); hold on; 
 xlabel('Date');ylabel('资产/现金');
 title('基金走势');

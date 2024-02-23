@@ -52,10 +52,10 @@ for i=2:N
 	if (i>100)
 		if (mdp(i-1)>0 )
 			if (dp(i-1)>mdp(i-1))  
-				t=abs(capital(i))/100;
-				 
-				share(i)=share(i-1) + t/price(i);
-				money(i)=money(i-1)-t; 
+% 				t=abs(capital(i))/100;
+% 				 
+% 				share(i)=share(i-1) + t/price(i);
+% 				money(i)=money(i-1)-t; 
 
 
 				share(i)=share(i-1) + money(i-1)/price(i);
